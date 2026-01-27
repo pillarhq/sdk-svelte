@@ -1,6 +1,24 @@
 # @pillar-ai/svelte
 
-Svelte bindings for the [Pillar](https://trypillar.com) Embedded Help SDK.
+Svelte bindings for the Pillar Embedded Help SDK — Add contextual help and AI-powered assistance to your Svelte application.
+
+[![npm version](https://img.shields.io/npm/v/@pillar-ai/svelte)](https://www.npmjs.com/package/@pillar-ai/svelte)
+[![npm downloads](https://img.shields.io/npm/dm/@pillar-ai/svelte)](https://www.npmjs.com/package/@pillar-ai/svelte)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue)](https://www.typescriptlang.org/)
+
+## Features
+
+- **Svelte Stores** — `usePillar` and `useHelpPanel` reactive stores
+- **Components** — `PillarProvider` and `PillarPanel` components
+- **Svelte 5 Support** — Full compatibility with Svelte 5 runes and snippets
+- **SvelteKit Integration** — Works seamlessly with SvelteKit routing
+- **Type-Safe Actions** — Full TypeScript support for custom actions
+- **Custom Cards** — Render custom Svelte components for inline actions
+
+## Documentation
+
+**[View Full Documentation](https://trypillar.com/docs)** | [Svelte Guide](https://trypillar.com/docs/svelte/installation) | [API Reference](https://trypillar.com/docs/reference/svelte)
 
 ## Installation
 
@@ -44,11 +62,34 @@ Then use the SDK anywhere in your app:
 {/if}
 ```
 
-## API Reference
+## SvelteKit Integration
 
-### Components
+For SvelteKit apps, add the provider in your root layout:
 
-#### `PillarProvider`
+```svelte
+<!-- src/routes/+layout.svelte -->
+<script lang="ts">
+  import { PillarProvider } from '@pillar-ai/svelte';
+  import { goto } from '$app/navigation';
+
+  let { children } = $props();
+</script>
+
+<PillarProvider
+  helpCenter="your-help-center"
+  onTask={(task) => {
+    if (task.name === 'navigate') {
+      goto(task.data.path);
+    }
+  }}
+>
+  {@render children()}
+</PillarProvider>
+```
+
+## Components
+
+### PillarProvider
 
 The main provider component that initializes the SDK.
 
@@ -71,12 +112,15 @@ The main provider component that initializes the SDK.
 ```
 
 **Props:**
-- `helpCenter` (required): Your help center identifier
-- `config`: SDK configuration options
-- `onTask`: Handler for AI-suggested actions
-- `cards`: Custom card components for inline UI actions
 
-#### `PillarPanel`
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `helpCenter` | `string` | Yes | Your help center identifier |
+| `config` | `PillarConfig` | No | SDK configuration options |
+| `onTask` | `(task) => void` | No | Handler for AI-suggested actions |
+| `cards` | `Record<string, Component>` | No | Custom card components |
+
+### PillarPanel
 
 Renders the help panel at a custom location (for advanced layouts).
 
@@ -92,9 +136,9 @@ Renders the help panel at a custom location (for advanced layouts).
 </PillarProvider>
 ```
 
-### Stores
+## Stores
 
-#### `usePillar()`
+### usePillar()
 
 Access the full SDK instance and state.
 
@@ -111,22 +155,22 @@ Access the full SDK instance and state.
 ```
 
 **Returns:**
-- `pillar`: Writable store with the SDK instance
-- `state`: Writable store with current state (`'uninitialized' | 'ready' | 'error'`)
-- `isReady`: Readable store (derived from state)
-- `isPanelOpen`: Writable store
-- `open(options?)`: Open the panel
-- `close()`: Close the panel
-- `toggle()`: Toggle the panel
-- `openArticle(slug)`: Open a specific article
-- `openCategory(slug)`: Open a specific category
-- `search(query)`: Open with search query
-- `navigate(view, params?)`: Navigate to a view
-- `setTheme(theme)`: Update theme at runtime
-- `setTextSelectionEnabled(enabled)`: Toggle text selection popover
-- `on(event, callback)`: Subscribe to SDK events
 
-#### `useHelpPanel()`
+| Property | Type | Description |
+|----------|------|-------------|
+| `pillar` | Writable | The SDK instance |
+| `state` | Writable | Current state (`'uninitialized'` \| `'ready'` \| `'error'`) |
+| `isReady` | Readable | Derived from state |
+| `isPanelOpen` | Writable | Panel open state |
+| `open(options?)` | Function | Open the panel |
+| `close()` | Function | Close the panel |
+| `toggle()` | Function | Toggle the panel |
+| `openArticle(slug)` | Function | Open a specific article |
+| `openCategory(slug)` | Function | Open a specific category |
+| `search(query)` | Function | Open with search query |
+| `setTheme(theme)` | Function | Update theme at runtime |
+
+### useHelpPanel()
 
 Simplified panel controls.
 
@@ -141,16 +185,6 @@ Simplified panel controls.
 <button on:click={openChat}>Ask AI</button>
 <button on:click={() => openSearch('how to')}>Search</button>
 ```
-
-**Returns:**
-- `isOpen`: Readable store
-- `open(options?)`: Open the panel
-- `close()`: Close the panel
-- `toggle()`: Toggle the panel
-- `openArticle(slug)`: Open a specific article
-- `openCategory(slug)`: Open a specific category
-- `openSearch(query?)`: Open search view
-- `openChat()`: Open AI chat view
 
 ## Type-Safe Actions
 
@@ -228,30 +262,17 @@ Register in the provider:
 </PillarProvider>
 ```
 
-## SvelteKit Integration
+## Related Packages
 
-For SvelteKit apps, add the provider in your root layout:
+| Package | Description |
+|---------|-------------|
+| [@pillar-ai/sdk](https://github.com/pillarhq/sdk) | Core vanilla JavaScript SDK |
+| [@pillar-ai/react](https://github.com/pillarhq/sdk-react) | React bindings |
+| [@pillar-ai/vue](https://github.com/pillarhq/sdk-vue) | Vue 3 bindings |
 
-```svelte
-<!-- src/routes/+layout.svelte -->
-<script lang="ts">
-  import { PillarProvider } from '@pillar-ai/svelte';
-  import { goto } from '$app/navigation';
+## Requirements
 
-  let { children } = $props();
-</script>
-
-<PillarProvider
-  helpCenter="your-help-center"
-  onTask={(task) => {
-    if (task.name === 'navigate') {
-      goto(task.data.path);
-    }
-  }}
->
-  {@render children()}
-</PillarProvider>
-```
+- Svelte 4.0.0 or higher
 
 ## License
 
