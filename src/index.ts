@@ -1,5 +1,5 @@
 /**
- * @pillar-ai/svelte - Svelte bindings for Pillar Embedded Help SDK
+ * @pillar-ai/svelte - Svelte bindings for Pillar SDK
  *
  * @example
  * ```svelte
@@ -7,7 +7,7 @@
  *   import { PillarProvider, usePillar, useHelpPanel } from '@pillar-ai/svelte';
  * </script>
  *
- * <PillarProvider helpCenter="your-help-center">
+ * <PillarProvider productKey="your-product-key">
  *   <MyApp />
  * </PillarProvider>
  * ```
@@ -24,7 +24,7 @@
  *
  * <div>
  *   <h1>Welcome!</h1>
- *   <button on:click={toggle}>Get Help</button>
+ *   <button on:click={toggle}>Open Co-pilot</button>
  * </div>
  * ```
  *
@@ -35,7 +35,7 @@
  * </script>
  *
  * <PillarProvider
- *   helpCenter="your-help-center"
+ *   productKey="your-product-key"
  *   config={{ panel: { container: 'manual' } }}
  * >
  *   <div class="layout">

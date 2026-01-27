@@ -21,14 +21,26 @@ import { mount, unmount } from 'svelte';
 
 // Props
 interface Props {
-  helpCenter: string;
-  config?: Omit<PillarConfig, 'helpCenter'>;
+  productKey?: string;
+  /** @deprecated Use productKey instead */
+  helpCenter?: string;
+  config?: Omit<PillarConfig, 'productKey' | 'helpCenter'>;
   onTask?: (task: TaskExecutePayload) => void;
   cards?: Record<string, CardComponent>;
   children?: import('svelte').Snippet;
 }
 
-let { helpCenter, config, onTask, cards, children }: Props = $props();
+let { productKey, helpCenter, config, onTask, cards, children }: Props = $props();
+
+// Support both productKey (new) and helpCenter (deprecated)
+const resolvedKey = productKey ?? helpCenter;
+
+// Warn about deprecated helpCenter usage
+if (helpCenter && !productKey) {
+  console.warn(
+    '[Pillar Svelte] "helpCenter" prop is deprecated. Use "productKey" instead.'
+  );
+}
 
 // Create stores
 const pillarStore = writable<Pillar | null>(null);
@@ -173,7 +185,7 @@ onMount(async () => {
 
     // Initialize new instance
     const instance = await Pillar.init({
-      helpCenter,
+      productKey: resolvedKey,
       ...config,
     });
 
